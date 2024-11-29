@@ -1,8 +1,12 @@
 package com.example.demo;
 
+import jakarta.validation.constraints.NotEmpty;
+
 public class Photo {
     private String fileName;
     private String id;
+
+    private byte[] data;
 
     public Photo() {
     }
@@ -26,5 +30,13 @@ public class Photo {
 
     public void setFileName(String fileName){
         this.fileName = fileName;
+    }
+
+    public byte[] getData(){
+        return this.data;
+    }
+
+    public void setData(byte[] data){
+        this.data = data;
     }
 }

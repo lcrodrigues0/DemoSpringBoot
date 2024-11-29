@@ -8,11 +8,11 @@
 
     <h2>Photo Upload</h2>
 
-    <input type="file" name="fileupload" id="fileupload"/>
+    <input type="file" name="fileUpload" id="fileUpload"/>
     <button id="upload-button" onclick="uploadFile()"> Upload </button>
 
     <script>
-        async function uploadPhoto() {
+        async function uploadFile() {
             let formData = new FormData();
             formData.append("data", fileUpload.files[0]);
 
