@@ -1,6 +1,7 @@
-package com.example.demo;
+package com.example.demo.web;
 
-import jakarta.validation.Valid;
+import com.example.demo.service.DemoService;
+import com.example.demo.model.Photo;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,10 +12,11 @@ import java.util.*;
 
 @RestController
 public class DemoController {
+    private final DemoService demoService;
 
-    private Map<String, Photo> db = new HashMap<>() {{
-        put("1", new Photo("1", "hello.jpg"));
-    }};
+    public DemoController(DemoService demoService) {
+        this.demoService = demoService;
+    }
 
     @GetMapping("/")
     public String hello() {
@@ -22,21 +24,20 @@ public class DemoController {
     }
 
     @GetMapping("/photos")
-    public Collection<Photo> get() {
-        return db.values();
+    public Iterable<Photo> get() {
+        return demoService.get();
     }
 
     @GetMapping("/photos/{id}")
-    public Photo get(@PathVariable String id) {
-        Photo photo = db.get(id);
-        if(photo == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    public Photo get(@PathVariable Integer id) {
+        Photo photo = demoService.get(id);
+        if (photo == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return photo;
     }
 
     @DeleteMapping("/photos/{id}")
-    public void delete(@PathVariable String id){
-        Photo photo = db.remove(id);
-        if(photo == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    public void delete(@PathVariable Integer id) {
+        demoService.remove(id);
     }
 
 //    @PostMapping("photos")
@@ -48,14 +49,6 @@ public class DemoController {
 
     @PostMapping("/photos")
     public Photo save(@RequestPart("data") MultipartFile file) throws IOException {
-        Photo photo = new Photo();
-
-        photo.setId(UUID.randomUUID().toString());
-        photo.setFileName(file.getOriginalFilename());
-        photo.setData(file.getBytes());
-
-        db.put(photo.getId(), photo);
-
-        return photo;
+        return demoService.save(file.getOriginalFilename(), file.getBytes(), file.getContentType());
     }
 }
